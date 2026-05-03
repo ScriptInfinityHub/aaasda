@@ -164,16 +164,16 @@ end)
 
         local Input = Tabs.Main:AddInput("Input", {
         Title = "Input Point",
-        Default = "Default",
+        Default = "1",
         Placeholder = "Placeholder",
-        Numeric = false, 
+        Numeric = true, 
         Finished = false,
         Callback = function(Value)
-            point = Value
+            local con = tonumber(Value)
+
+            point = con
         end
     })
-
-    local point2 = tonumber(point)
 
 
     local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Stats", Default = false })
@@ -181,15 +181,22 @@ end)
     Toggle:OnChanged(function(a)
         _G.A = a
 
-        while _G.A do task.wait()
-            pcall(function()
-                local args = {
-    stats,
-    point2
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/StatsAllocateEvent"):FireServer(unpack(args))
-            end)
-        end
+if _G.A then
+        task.spawn(function()
+            while _G.A do
+                task.wait(0.5)
+                if stats and point then
+                    pcall(function()
+                        local args = {
+                            stats,
+                            point
+                        }
+                        game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/StatsAllocateEvent"):FireServer(unpack(args))
+                    end)
+                end
+            end
+        end)
+    end
 
     end)
 
