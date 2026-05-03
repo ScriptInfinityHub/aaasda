@@ -1,0 +1,167 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Fluent " .. Fluent.Version,
+    SubTitle = "by dawid",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+do
+
+    local plr = game.Players.LocalPlayer
+    local Backpack = plr.Backpack
+    local Weaponlist = {}
+    local Weapon = nil
+
+    for i,v in pairs(Backpack:GetChildren()) do
+        table.insert(Weaponlist,v.Name)
+    end
+
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
+        Title = "Select Weapon",
+        Values = Weaponlist,
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        Weapon = Value
+    end)
+
+
+local function GetLevel()
+local lv = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.HUD.Level.Text
+local lv2 = string.match(lv, "%d+")
+local Level = tonumber(lv2)
+
+return Level
+end
+
+local function CheckQuest()
+    local info = {
+        monname = "",
+    }
+    if GetLevel() <= 199 then
+        info.monname = "Bandit"
+        elseif GetLevel() > 200 and GetLevel() <=399 then
+        info.monname = "Monkey"
+        elseif GetLevel() > 400 and GetLevel() <=599 then
+        info.monname = "Shank"
+        elseif GetLevel() > 600 and GetLevel() <=799 then
+        info.monname = "Snow Bandit"
+        elseif GetLevel() > 800 and GetLevel() <=999 then
+        info.monname = "Mihawk"
+    end
+
+    return info
+end
+    
+function Tp(Pos)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
+end
+    local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "AutoFarm", Default = false })
+
+    Toggle:OnChanged(function(s)
+        _G.Farm = s
+
+        while _G.Farm do task.wait()
+    pcall(function ()
+        local quest = CheckQuest()
+        if quest.monname == "" then return end
+    for i, v in pairs(workspace.Enemies:GetDescendants()) do
+    if v.Name == quest.monname then
+
+        local innerModel = v:FindFirstChild(quest.monname)
+
+        if innerModel then
+            local hum = innerModel:FindFirstChild("Humanoid")
+            local RootPart = innerModel:FindFirstChild("HumanoidRootPart")
+            repeat
+                task.wait()
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Weapon))
+                Tp(RootPart.CFrame * CFrame.new(0,-7,0) *CFrame.Angles(math.rad(90),0,0))
+                game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/ActionRemote"):FireServer("M1",Weapon)
+            until hum.Health <= 0 or not _G.Farm
+
+        end
+
+    end
+    end
+    end)
+end
+local RunService = game:GetService("RunService")
+RunService.RenderStepped:Connect(function()
+for i,v in pairs(plr.Character:GetChildren()) do
+    local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+    if v:IsA("BasePart") then
+        v.CanCollide = false
+        if v.Name == "HumanoidRootPart" then
+          local bv = hrp:FindFirstChild("FloatVelocity") 
+          local hl = hrp.Parent:FindFirstChild("Focus")
+        if _G.Farm then
+        if not bv then
+            bv = Instance.new("BodyVelocity")
+            bv.Name = "FloatVelocity"
+            bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            bv.Velocity = Vector3.new(0, 0, 0)
+            bv.Parent = hrp
+        end
+        if not hl then
+            hl = Instance.new("Highlight")
+            hl.Name = "Focus"
+            hl.Parent = hrp.Parent
+        end
+        else
+            if bv then
+                bv:Destroy()
+            end
+            if hl then
+                hl:Destroy()
+            end
+        end
+        end
+    end
+end
+end)
+    end)
+
+    Options.MyToggle:SetValue(false)
+end
+
+
+
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:IgnoreThemeSettings()
+
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+SaveManager:LoadAutoloadConfig()
