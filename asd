@@ -60,6 +60,10 @@ local function CheckQuest()
         info.monname = "Monkey"
         elseif GetLevel() > 400 and GetLevel() <=599 then
         info.monname = "Shank"
+        elseif GetLevel() > 600 and GetLevel() <=799 then
+        info.monname = "Snow Bandit"
+        elseif GetLevel() > 800 and GetLevel() <=999 then
+        info.monname = "Mihawk"
     end
 
     return info
@@ -68,7 +72,7 @@ end
 function Tp(Pos)
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
 end
-    local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Toggle", Default = false })
+    local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "AutoFarm", Default = false })
 
     Toggle:OnChanged(function(s)
         _G.Farm = s
