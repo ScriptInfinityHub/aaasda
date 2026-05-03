@@ -21,17 +21,6 @@ local Options = Fluent.Options
 
 do
 
-
-
-
-
-
-
-
-
-
-
-
     local plr = game.Players.LocalPlayer
     local Backpack = plr.Backpack
     local Weaponlist = {}
@@ -109,36 +98,47 @@ end
     end
     end)
 end
+local RunService = game:GetService("RunService")
+RunService.RenderStepped:Connect(function()
+for i,v in pairs(plr.Character:GetChildren()) do
+    local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+    if v:IsA("BasePart") then
+        v.CanCollide = false
+        if v.Name == "HumanoidRootPart" then
+          local bv = hrp:FindFirstChild("FloatVelocity") 
+          local hl = hrp.Parent:FindFirstChild("Focus")
+        if _G.Farm then
+        if not bv then
+            bv = Instance.new("BodyVelocity")
+            bv.Name = "FloatVelocity"
+            bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            bv.Velocity = Vector3.new(0, 0, 0)
+            bv.Parent = hrp
+        end
+        if not hl then
+            hl = Instance.new("Highlight")
+            hl.Name = "Focus"
+            hl.Parent = hrp.Parent
+        end
+        else
+            if bv then
+                bv:Destroy()
+            end
+            if hl then
+                hl:Destroy()
+            end
+        end
+        end
+    end
+end
+end)
     end)
 
     Options.MyToggle:SetValue(false)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 end
+
+
+
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
