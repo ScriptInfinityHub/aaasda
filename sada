@@ -173,6 +173,8 @@ end)
         end
     })
 
+    local point2 = tonumber(point)
+
 
     local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Stats", Default = false })
 
@@ -183,7 +185,7 @@ end)
             pcall(function()
                 local args = {
     stats,
-    point
+    point2
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/StatsAllocateEvent"):FireServer(unpack(args))
             end)
