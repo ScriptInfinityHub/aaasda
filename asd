@@ -20,6 +20,39 @@ local Tabs = {
 local Options = Fluent.Options
 
 do
+
+
+
+
+
+
+
+
+
+
+
+
+    local plr = game.Players.LocalPlayer
+    local Backpack = plr.Backpack
+    local Weaponlist = {}
+    local Weapon = nil
+
+    for i,v in pairs(Backpack:GetChildren()) do
+        table.insert(Weaponlist,v.Name)
+    end
+
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
+        Title = "Select Weapon",
+        Values = Weaponlist,
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        Weapon = Value
+    end)
+
+
 local function GetLevel()
 local lv = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.HUD.Level.Text
 local lv2 = string.match(lv, "%d+")
@@ -65,8 +98,9 @@ end
             local RootPart = innerModel:FindFirstChild("HumanoidRootPart")
             repeat
                 task.wait()
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Weapon))
                 Tp(RootPart.CFrame * CFrame.new(0,-7,0) *CFrame.Angles(math.rad(90),0,0))
-                game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/ActionRemote"):FireServer("M1","Katana")
+                game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/ActionRemote"):FireServer("M1",Weapon)
             until hum.Health <= 0 or not _G.Farm
 
         end
@@ -78,6 +112,32 @@ end
     end)
 
     Options.MyToggle:SetValue(false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end
 
 SaveManager:SetLibrary(Fluent)
