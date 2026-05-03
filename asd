@@ -139,6 +139,61 @@ end)
     end)
 
     Options.MyToggle:SetValue(false)
+
+
+
+    statslist = {
+        "Strength",
+        "Health",
+        "Weapon",
+        "Power"
+    }
+    stats = nil
+    point = nil
+
+    local Dropdown = Tabs.Main:AddDropdown("Dropdown", {
+        Title = "Select Weapon",
+        Values = statslist,
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        stats = Value
+    end)
+
+        local Input = Tabs.Main:AddInput("Input", {
+        Title = "Input Point",
+        Default = "Default",
+        Placeholder = "Placeholder",
+        Numeric = false, 
+        Finished = false,
+        Callback = function(Value)
+            point = Value
+        end
+    })
+
+    local point2 = tonumber(point)
+
+
+    local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Stats", Default = false })
+
+    Toggle:OnChanged(function(a)
+        _G.A = a
+
+        while _G.A do task.wait()
+            pcall(function()
+                local args = {
+    stats,
+    point2
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_net@0.2.0"):WaitForChild("net"):WaitForChild("RE/StatsAllocateEvent"):FireServer(unpack(args))
+            end)
+        end
+
+    end)
+
+
 end
 
 
